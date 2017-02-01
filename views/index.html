@@ -83,7 +83,14 @@
 </div>
 <script>
   var hotels = {{ templateHotels | dump | safe }};
-  var restaurants = {{ templateRestaurants | dump | safe }};
+  // var restaurants = {{ templateRestaurants | dump | safe }};
   var activities = {{ templateActivities | dump | safe }};
+
+
+
+    // some code to run if the request errors out
+
+
+
 </script>
 {% endblock %}

@@ -8,7 +8,10 @@
  * that attraction's id. Selecting an option looks up the attraction by id,
  * then tells the trip module to add the attraction.
  */
-
+var restaurants
+$.get('/api/restaurants')
+                      .then(function (restaurants) {
+                        restaurants = restaurants
 $(function () {
 
     // jQuery selects
@@ -47,3 +50,5 @@ $(function () {
     });
 
 });
+                      })
+                      .catch( console.error.bind(console) );
