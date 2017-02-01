@@ -8,47 +8,50 @@
  * that attraction's id. Selecting an option looks up the attraction by id,
  * then tells the trip module to add the attraction.
  */
-var restaurants
-$.get('/api/restaurants')
-                      .then(function (restaurants) {
-                        restaurants = restaurants
-$(function () {
+const gettingHotels = $.get('/api/hotels');
+const gettingRestaurants = $.get('/api/restaurants');
+const gettingActivities = $.get('/api/activities');
 
-    // jQuery selects
-    var $optionsPanel = $('#options-panel');
-    var $hotelSelect = $optionsPanel.find('#hotel-choices');
-    var $restaurantSelect = $optionsPanel.find('#restaurant-choices');
-    var $activitySelect = $optionsPanel.find('#activity-choices');
+Promise.all([gettingHotels, gettingRestaurants, gettingActivities])
+.then(function ([hotels, restaurants, activities]) {
 
-    // make all the option tags (second arg of `forEach` is a `this` binding)
-    hotels.forEach(makeOption, $hotelSelect);
-    restaurants.forEach(makeOption, $restaurantSelect);
-    activities.forEach(makeOption, $activitySelect);
+  $(function () {
 
-    // Once you've made AJAX calls to retrieve this information,
-    // call attractions.loadEnhancedAttractions in the fashion
-    // exampled below in order to integrate it.
-    attractionsModule.loadEnhancedAttractions('hotels', hotels);
-    attractionsModule.loadEnhancedAttractions('restaurants', restaurants);
-    attractionsModule.loadEnhancedAttractions('activities', activities);
+      // jQuery selects
+      var $optionsPanel = $('#options-panel');
+      var $hotelSelect = $optionsPanel.find('#hotel-choices');
+      var $restaurantSelect = $optionsPanel.find('#restaurant-choices');
+      var $activitySelect = $optionsPanel.find('#activity-choices');
 
-    function makeOption(databaseAttraction) {
-        var $option = $('<option></option>') // makes a new option tag
-          .text(databaseAttraction.name)
-          .val(databaseAttraction.id);
-        this.append($option); // add the option to the specific select
-    }
+      // make all the option tags (second arg of `forEach` is a `this` binding)
+      hotels.forEach(makeOption, $hotelSelect);
+      restaurants.forEach(makeOption, $restaurantSelect);
+      activities.forEach(makeOption, $activitySelect);
 
-    // what to do when the `+` button next to a `select` is clicked
-    $optionsPanel.on('click', 'button[data-action="add"]', function () {
-        var $select = $(this).siblings('select');
-        var type = $select.data('type'); // from HTML data-type attribute
-        var id = $select.find(':selected').val();
-        // get associated attraction and add it to the current day in the trip
-        var attraction = attractionsModule.getByTypeAndId(type, id);
-        tripModule.addToCurrent(attraction);
-    });
+      // Once you've made AJAX calls to retrieve this information,
+      // call attractions.loadEnhancedAttractions in the fashion
+      // exampled below in order to integrate it.
+      attractionsModule.loadEnhancedAttractions('hotels', hotels);
+      attractionsModule.loadEnhancedAttractions('restaurants', restaurants);
+      attractionsModule.loadEnhancedAttractions('activities', activities);
 
-});
-                      })
-                      .catch( console.error.bind(console) );
+      function makeOption(databaseAttraction) {
+          var $option = $('<option></option>') // makes a new option tag
+            .text(databaseAttraction.name)
+            .val(databaseAttraction.id);
+          this.append($option); // add the option to the specific select
+      }
+
+      // what to do when the `+` button next to a `select` is clicked
+      $optionsPanel.on('click', 'button[data-action="add"]', function () {
+          var $select = $(this).siblings('select');
+          var type = $select.data('type'); // from HTML data-type attribute
+          var id = $select.find(':selected').val();
+          // get associated attraction and add it to the current day in the trip
+          var attraction = attractionsModule.getByTypeAndId(type, id);
+          tripModule.addToCurrent(attraction);
+      });
+
+  });
+})
+.catch( console.error.bind(console) );
