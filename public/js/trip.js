@@ -47,12 +47,26 @@ var tripModule = (function () {
 
   function addDay () {
     if (this && this.blur) this.blur(); // removes focus box from buttons
-    var newDay = dayModule.create({ number: days.length + 1 }); // dayModule
-    days.push(newDay);
-    if (days.length === 1) {
-      currentDay = newDay;
-    }
-    switchTo(newDay);
+    // make an ajax request to make a new day in days table
+    //to do that we will need to know the day's number to pass in to database
+    // then we'll make a new day on front end, having retrieved its id.
+    let dayNumber = days.length + 1
+    $.ajax({
+      method: 'POST',
+      url: '/api/days',
+      data: {number: dayNumber}
+    })
+    .then(function (day) { console.log('POST response data: ', day)
+      var newDay = dayModule.create(day); // dayModule
+      days.push(newDay);
+      if (days.length === 1) {
+        currentDay = newDay;
+      }
+      switchTo(newDay);
+     })
+    .catch(console.error.bind(console));
+
+
   }
 
   function deleteCurrentDay () {

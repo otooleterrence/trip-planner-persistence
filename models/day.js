@@ -5,6 +5,13 @@ const Day = db.define('day', {
   number: {
     type: Sequelize.INTEGER
   }
+
+// }, {
+//   hooks: {
+//     afterDestroy: function(day) {
+//         console.log(day)
+//     }
+//   }
 });
 
 module.exports = Day;
