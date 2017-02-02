@@ -26,15 +26,18 @@ router.get('/:id', function(req, res, next){
 
 router.delete('/:id', function(req, res, next){
   // delete one day
-   Day.destroy({where: {id: req.params.id}})
+  return Day.findOne( {where: {id: req.params.id}} )
+  .then( (day) => {
+    return day.destroy();
+  })
   .then(function(statusCode) {
     if (statusCode) {
-      res.send('deleted')
+      res.send('deleted');
     } else {
-      res.send('Sorry Dave, I can\'t let you do that')
+      res.send('Sorry Dave, I can\'t let you do that');
     }
   })
-  .catch(next)
+  .catch(next);
 });
 
 router.post('/', function(req, res, next){
